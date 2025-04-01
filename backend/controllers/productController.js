@@ -9,8 +9,13 @@ export const getAllProducts = asyncHandler(async (req, res) => {
 export const getProductById = asyncHandler(async (req, res) => {
   const productId = req.params.id;
   if (!productId) {
-    return res.status(400).json({ message: "Product ID is required" });
+    res.status(400);
+    throw new Error("Product ID is required");
   }
-  const products = await ProductServices.getProductById(productId);
-  res.json(products);
+  const product = await ProductServices.getProductById(productId);
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+  res.status(200).json(product);
 });
